@@ -4,6 +4,9 @@ from discord.ext import commands
 import boto3
 from dotenv import load_dotenv
 import asyncio
+import random
+from duckduckgo_search import DDGS
+
 
 # Cargar variables de entorno
 load_dotenv()
@@ -91,27 +94,38 @@ async def estado_server(ctx):
         await ctx.send(f"❌ Error al consultar estado: {e}")
 
 @bot.command(name='Cp')
-async def troll_msg(ctx):
-    await ctx.send("👀👀👀")
+async def buscar_imagen(ctx, *, busqueda: str = "Mia Khalifa"):
+    # El bot avisa que está buscando
+    await ctx.send(f"👀 Buscando en la web algo aleatorio sobre: **{busqueda}**... 👀")
     
     try:
-        # 1. Pega la URL de la imagen aquí (asegúrate de que mantenga las comillas)
-        url_imagen = "https://ei.phncdn.com/videos/202411/04/460044911/original/(m=qQJUYYZbeaSaaTbaAaaaa)(mh=qz860fpt7u5nxnNW)0.jpg" 
+        # Usamos DuckDuckGo para buscar las imágenes de forma silenciosa
+        with DDGS() as ddgs:
+            # Traemos los primeros 20 resultados de la búsqueda
+            resultados = list(ddgs.images(busqueda, max_results=20))
         
-        # 2. Crea el mensaje incrustado (Embed)
+        # Si la búsqueda no arroja resultados
+        if not resultados:
+            await ctx.send(f"❌ No encontré ninguna imagen para '{busqueda}'. Intenta con otra palabra.")
+            return
+            
+        # Elegimos un resultado al azar de la lista
+        imagen_elegida = random.choice(resultados)
+        url_imagen = imagen_elegida['image']
+        
+        # Armamos el mensaje visual
         embed = discord.Embed(
-            title="💤 Happy Pablo 👀", 
-            description="xxx", 
-            color=discord.Color.red() # Le da una barra lateral roja al mensaje
+            title=f"🔎 Búsqueda aleatoria: {busqueda}", 
+            color=discord.Color.dark_grey() 
         )
-        # 3. Asigna la imagen al Embed
         embed.set_image(url=url_imagen)
+        embed.set_footer(text="Fuente: Extracción web de imágenes")
         
-        # 4. Envía el Embed al canal
+        # Enviamos la imagen al canal
         await ctx.send(embed=embed)
         
     except Exception as e:
-        await ctx.send(f"❌ Error al apagar: {e}")
+        await ctx.send(f"❌ Error al extraer la imagen: {e}")
 
 # Iniciar el bot
 bot.run(DISCORD_TOKEN)

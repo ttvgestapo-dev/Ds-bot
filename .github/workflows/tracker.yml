@@ -26,6 +26,9 @@ jobs:
       - name: Instalar dependencias
         run: pip install discord.py boto3 python-dotenv requests
 
+      - name: Instalar dependencias
+        run: pip install discord.py boto3 python-dotenv requests duckduckgo-search
+
       - name: Ejecutar el Bot (Maratón de 6 horas)
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
