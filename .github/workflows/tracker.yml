@@ -1,0 +1,38 @@
+name: Discord Bot Runner
+
+on:
+  schedule:
+    # GitHub Actions tiene un mínimo de 5 minutos entre ejecuciones con cron.
+    # El loop interno simula la ejecución cada 1 minuto durante los 5 minutos.
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: pip install discord.py boto3 python-dotenv requests
+
+      - name: Ejecutar python-bot.py cada 1 minuto (loop de 5 iteraciones)
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        run: |
+          for i in 1 2 3 4 5; do
+            echo "--- Ejecución $i de 5 ---"
+            timeout 50 python python-bot.py || true
+            echo "--- Esperando 10 segundos antes de la siguiente ejecución ---"
+            sleep 10
+          done
