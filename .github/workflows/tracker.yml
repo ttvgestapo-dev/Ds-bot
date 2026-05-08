@@ -23,9 +23,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Instalar dependencias
-        run: pip install discord.py boto3 python-dotenv requests
-
+      # Una sola instalación con todas las librerías necesarias
       - name: Instalar dependencias
         run: pip install discord.py boto3 python-dotenv requests duckduckgo-search
 
@@ -35,7 +33,6 @@ jobs:
           INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-        # Se ejecuta limpio, sin loops ni timeouts tontos
         run: |
           echo "Iniciando el bot. Escuchando a Discord..."
           python python-bot.py
