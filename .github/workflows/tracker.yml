@@ -1,15 +1,18 @@
 name: Discord Bot Runner
 
 on:
-  schedule:
-    # GitHub Actions tiene un mínimo de 5 minutos entre ejecuciones con cron.
-    # El loop interno simula la ejecución cada 1 minuto durante los 5 minutos.
-    - cron: '*/5 * * * *'
   workflow_dispatch:
+
+# ESTA ES LA MAGIA: Si entra una nueva petición, mata el bot anterior y levanta uno fresco
+concurrency:
+  group: bot-instancia-unica
+  cancel-in-progress: true
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    # Forzamos el límite máximo de GitHub Actions
+    timeout-minutes: 360
 
     steps:
       - name: Checkout repositorio
@@ -18,21 +21,18 @@ jobs:
       - name: Instalar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Instalar dependencias
         run: pip install discord.py boto3 python-dotenv requests
 
-      - name: Ejecutar python-bot.py cada 1 minuto (loop de 5 iteraciones)
+      - name: Ejecutar el Bot (Maratón de 6 horas)
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        # Se ejecuta limpio, sin loops ni timeouts tontos
         run: |
-          for i in 1 2 3 4 5; do
-            echo "--- Ejecución $i de 5 ---"
-            timeout 50 python python-bot.py || true
-            echo "--- Esperando 10 segundos antes de la siguiente ejecución ---"
-            sleep 10
-          done
+          echo "Iniciando el bot. Escuchando a Discord..."
+          python python-bot.py
