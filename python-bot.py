@@ -5,7 +5,7 @@ import boto3
 from dotenv import load_dotenv
 import asyncio
 import random
-from duckduckgo_search import DDGS
+
 
 
 # Cargar variables de entorno
