@@ -23,9 +23,9 @@ jobs:
         with:
           python-version: "3.10"
 
-      # Una sola instalación con todas las librerías necesarias
+      # Una sola instalación limpia
       - name: Instalar dependencias
-        run: pip install discord.py boto3 python-dotenv requests duckduckgo-search
+        run: pip install discord.py boto3 python-dotenv requests
 
       - name: Ejecutar el Bot (Maratón de 6 horas)
         env:

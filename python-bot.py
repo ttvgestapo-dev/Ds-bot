@@ -33,7 +33,7 @@ async def on_ready():
 @bot.command(name='prender')
 async def prender_server(ctx):
     # Aviso inicial de que el proceso es largo
-    await ctx.send("⏳ Contactando a Pablo... Iniciando el Rape Mode.\n⚠️ **Aviso:** El modpack ATM10 es pesado y el servidor tardará aproximadamente **6 minutos y 30 segundos** en estar listo para jugar.")
+    await ctx.send("⏳ Contactando a Pablo... Iniciando el Rape Mode.\n⚠️ 5 minutos tarda en encender el server ")
     
     try:
         # 1. Mandar a encender la instancia
@@ -47,7 +47,7 @@ async def prender_server(ctx):
         ip_publica = response['Reservations'][0]['Instances'][0].get('PublicIpAddress')
         
         if ip_publica:
-            await ctx.send(f"🌐 IP obtenida: `{ip_publica}`\n⏳ Me quedaré esperando el resto del tiempo de carga. Te avisaré apenas pasen los 6:30 min.")
+            await ctx.send(f"🌐 IP obtenida: `{ip_publica}` recordadr que hay que cambiar la ip cada vez que se inicie el servidor\n⏳ Me quedaré esperando el resto del tiempo de carga. Te avisaré apenas pasen los 6:30 min.")
         else:
             await ctx.send("⚠️ AWS aún no suelta la IP, pero el servidor sigue cargando. Avisaré al terminar los 6:30 min.")
 
@@ -67,7 +67,7 @@ async def apagar_server(ctx):
     await ctx.send("⏳ Apagando el servidor, Pablo no contesto...")
     try:
         ec2.stop_instances(InstanceIds=[INSTANCE_ID])
-        await ctx.send("💤 Servidor apagado. ¡Horas ahorradas con éxito!")
+        await ctx.send("💤 Servidor apagado. ¡Alguien sera violado!")
     except Exception as e:
         await ctx.send(f"❌ Error al apagar: {e}")
 
@@ -94,38 +94,40 @@ async def estado_server(ctx):
         await ctx.send(f"❌ Error al consultar estado: {e}")
 
 @bot.command(name='Cp')
-async def buscar_imagen(ctx, *, busqueda: str = "Mia Khalifa"):
-    # El bot avisa que está buscando
-    await ctx.send(f"👀 Buscando en la web algo aleatorio sobre: **{busqueda}**... 👀")
+async def imagen_random(ctx):
+    await ctx.send("👀 Accediendo a la base de datos de **PABLO**... 👀")
+    
+    # Tu array (lista) con los links ya definidos
+    # Asegúrate de que los links terminen en .jpg, .png o .gif para que Discord los muestre bien
+    lista_imagenes = [
+        "https://thumb-cdn77.xvideos-cdn.com/dbfacb14-52b3-4c0e-83b8-cff0ed3c6f79/0/xv_30_p.jpg",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9q6JQopQ1By56oxrZw9EFrfbRBccCVZiZCQ&s",
+        "https://thumb-cdn77.xvideos-cdn.com/7340a5fd-1b86-4c72-b516-8f387d35fdd8/0/xv_30_p.jpg",
+        "https://www.xleche.com/wp-content/uploads/2025/04/Mia-K-Video-porn-XXX.webp",
+        "https://ejemplo.com/imagen5.jpg",
+        "https://thumb-cdn77.xvideos-cdn.com/ffd92193-1227-416e-8b13-cb61f0dd23b1/0/xv_30_p.jpg",
+        "https://ei.phncdn.com/videos/202309/08/439030961/original/(m=q7SRX3YbeaSaaTbaAaaaa)(mh=Afm9lCqbyrGjieHZ)0.jpg",
+        "https://ei.phncdn.com/videos/201903/20/214077662/original/(m=qUQ2LZYbeaSaaTbaAaaaa)(mh=LPs0VCmi_NSnTkqo)0.jpg",
+        "https://media.thisvid.com/contents/videos_screenshots/11607000/11607397/preview.jpg",
+        "https://media.tenor.com/cYCZH_WGX6gAAAAe/vardoc1-cuck.png"
+    ]
     
     try:
-        # Usamos DuckDuckGo para buscar las imágenes de forma silenciosa
-        with DDGS() as ddgs:
-            # Traemos los primeros 20 resultados de la búsqueda
-            resultados = list(ddgs.images(busqueda, max_results=20))
-        
-        # Si la búsqueda no arroja resultados
-        if not resultados:
-            await ctx.send(f"❌ No encontré ninguna imagen para '{busqueda}'. Intenta con otra palabra.")
-            return
-            
-        # Elegimos un resultado al azar de la lista
-        imagen_elegida = random.choice(resultados)
-        url_imagen = imagen_elegida['image']
+        # La magia de Python: elige un elemento al azar de la lista
+        url_elegida = random.choice(lista_imagenes)
         
         # Armamos el mensaje visual
         embed = discord.Embed(
-            title=f"🔎 Búsqueda aleatoria: {busqueda}", 
-            color=discord.Color.dark_grey() 
+            title="🔥 Happy Chantussy", 
+            color=discord.Color.dark_red() 
         )
-        embed.set_image(url=url_imagen)
-        embed.set_footer(text="Fuente: Extracción web de imágenes")
+        embed.set_image(url=url_elegida)
         
         # Enviamos la imagen al canal
         await ctx.send(embed=embed)
         
     except Exception as e:
-        await ctx.send(f"❌ Error al extraer la imagen: {e}")
+        await ctx.send(f"❌ Error al enviar la imagen: {e}")
 
 # Iniciar el bot
 bot.run(DISCORD_TOKEN)
