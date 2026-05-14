@@ -79,8 +79,30 @@ async def prender_server(ctx):
 async def apagar_server(ctx):
     await ctx.send("⏳ Apagando el servidor, Pablo no contesto...")
     try:
+        # 1. Mandar a apagar la instancia
         ec2.stop_instances(InstanceIds=[INSTANCE_ID])
-        await ctx.send("💤 Servidor apagado. ¡Alguien sera violado!")
+        
+        # 2. Enlaces RAW de GitHub (vital para que Discord renderice la foto)
+        url_img1 = "https://raw.githubusercontent.com/ttvgestapo-dev/imagenes-bot/main/WhatsApp%20Image%202026-05-14%20at%209.39.59%20AM.jpeg"
+        url_img2 = "https://raw.githubusercontent.com/ttvgestapo-dev/imagenes-bot/main/WhatsApp%20Image%202026-05-14%20at%209.38.35%20AM.jpeg"
+        
+        # 3. Creamos el primer diseño (Embed) con el texto y la primera imagen
+        embed1 = discord.Embed(
+            title="💤 Servidor apagado.",
+            description="**¡Alguien sera violado!**",
+            color=discord.Color.dark_gray() # Color gris para indicar que está apagado
+        )
+        embed1.set_image(url=url_img1)
+        
+        # 4. Creamos el segundo diseño (Embed) que solo contendrá la segunda imagen
+        embed2 = discord.Embed(
+            color=discord.Color.dark_gray()
+        )
+        embed2.set_image(url=url_img2)
+        
+        # 5. Enviamos ambos embeds de una sola vez usando el parámetro 'embeds' (en plural)
+        await ctx.send(embeds=[embed1, embed2])
+        
     except Exception as e:
         await ctx.send(f"❌ Error al apagar: {e}")
 
