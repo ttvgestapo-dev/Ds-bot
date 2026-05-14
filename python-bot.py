@@ -55,9 +55,22 @@ async def prender_server(ctx):
         # Como ya esperamos 15, restamos: 390 - 15 = 375 segundos
         await asyncio.sleep(285)
         
-        # 4. Aviso final de servidor listo
+        # 4. Aviso final de servidor listo con imagen desde GitHub
         mencion = "@everyone" # Puedes cambiar esto por un rol si prefieres
-        await ctx.send(f"🔥 {mencion} **¡EL SERVIDOR ESTA LISTO, TODOS A VIOLAR!**")
+        
+        # Usamos el enlace RAW de GitHub para que Discord pueda renderizar la imagen
+        url_imagen_github = "https://raw.githubusercontent.com/ttvgestapo-dev/imagenes-bot/main/WhatsApp%20Image%202026-05-14%20at%209.17.17%20AM.jpeg"
+        
+        # Creamos el diseño visual (Embed)
+        embed = discord.Embed(
+            title="🔥 ¡EL SERVIDOR ESTA LISTO!",
+            description=f"{mencion} **¡TODOS A VIOLAR!**",
+            color=discord.Color.dark_red() # Color de la barrita lateral
+        )
+        embed.set_image(url=url_imagen_github)
+        
+        # Enviamos el aviso final con la imagen incorporada
+        await ctx.send(embed=embed)
             
     except Exception as e:
         await ctx.send(f"❌ Error al iniciar: {e}")
@@ -110,6 +123,7 @@ async def imagen_random(ctx):
         "https://ei.phncdn.com/videos/201903/20/214077662/original/(m=qUQ2LZYbeaSaaTbaAaaaa)(mh=LPs0VCmi_NSnTkqo)0.jpg",
         "https://media.thisvid.com/contents/videos_screenshots/11607000/11607397/preview.jpg",
         "https://media.tenor.com/cYCZH_WGX6gAAAAe/vardoc1-cuck.png"
+        
     ]
     
     try:
